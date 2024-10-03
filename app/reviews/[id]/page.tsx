@@ -9,7 +9,7 @@ const MovieReviews = () => {
   const { id } = useParams();
   console.log(id);
 
-  const [movieId, movieName] = id?.split("-");
+  const [movieId, movieName] = id.toLocaleString()?.split("-");
   console.log(movieName);
 
   const reviewsQuery = trpc.reviews.getReviewsByMovieId.useQuery({
