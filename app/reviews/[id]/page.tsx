@@ -25,9 +25,9 @@ const MovieReviews = () => {
   }
 
   const reviews = reviewsQuery.data;
-
+  const length = (reviews || [])?.length;
   const avgRating =
-    reviews?.reduce((acc, review) => acc + review.rating, 0) / reviews?.length;
+    (reviews || [])?.reduce((acc, review) => acc + review.rating, 0) / length;
 
   return (
     <div className="max-w-4xl mx-auto p-6">

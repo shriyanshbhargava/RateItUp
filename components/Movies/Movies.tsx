@@ -12,10 +12,10 @@ import {
 import { trpc } from "@/server/client";
 
 interface MovieReview {
-  id: string;
+  id: string | number;
   name: string;
   releaseDate: string;
-  avgRating: number;
+  avgRating: number | null;
 }
 
 const formatReleaseDate = (dateString: string) => {
@@ -67,7 +67,9 @@ export default function MovieCritic() {
 
   const [isEditMovieModalVisible, setIsEditMovieModalVisible] =
     useState<boolean>(false);
-  const [editMovieId, setEditMovieId] = useState<string | undefined>(undefined);
+  const [editMovieId, setEditMovieId] = useState<string | number | undefined>(
+    undefined
+  );
   const [editName, setEditName] = useState<string>("");
   const [editReleaseDate, setEditReleaseDate] = useState<string>("");
 
@@ -98,7 +100,7 @@ export default function MovieCritic() {
   const handleAddReviewOk = () => {
     if (movieId && reviewer && rating !== undefined && comments) {
       addReviewMutation.mutate(
-        { movieId, reviewer, rating, comments },
+        { movieId: Number(movieId), reviewer, rating, comments },
         {
           onSettled: () => {
             setIsAddReviewModalVisible(false);
@@ -209,7 +211,9 @@ export default function MovieCritic() {
                 title={movie.name}
                 extra={
                   <span>
-                    {movie.avgRating > 0 ? `${movie.avgRating} / 10` : "N/A"}
+                    {movie.avgRating !== null
+                      ? movie.avgRating.toFixed(1)
+                      : "N/A"}
                   </span>
                 }
                 actions={[
@@ -219,7 +223,7 @@ export default function MovieCritic() {
                   />,
                   <DeleteOutlined
                     key="delete"
-                    onClick={() => handleDeleteClick(movie.id)}
+                    onClick={() => handleDeleteClick(movie.id.toString())}
                   />,
                 ]}
               >

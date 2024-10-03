@@ -92,8 +92,10 @@ export const moviesRouter = router({
           .optional()
           .refine(
             (data) => {
-              const parsedDate = new Date(data);
-              return !isNaN(parsedDate.getTime());
+              if (data) {
+                const parsedDate = new Date(data);
+                return !isNaN(parsedDate.getTime());
+              }
             },
             { message: "Invalid date format" }
           ),
