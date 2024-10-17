@@ -7,12 +7,19 @@ import { useParams } from "next/navigation";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Modal, Input, Rate, message } from "antd";
 
+interface Review {
+  id: number;
+  comments: string;
+  rating: number;
+  reviewer?: string | null;
+}
+
 const MovieReviews = () => {
   const { id } = useParams();
   const [movieId, movieName] = id.toLocaleString()?.split("-");
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const [selectedReview, setSelectedReview] = useState(null);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [newComments, setNewComments] = useState("");
   const [newRating, setNewRating] = useState(0);
 
@@ -20,21 +27,21 @@ const MovieReviews = () => {
     movieId: Number(movieId),
   });
 
-  const deleteReviewMutation = trpc.reviews.deleteReview.useMutation({
+  const deleteReviewMutation = trpc.reviews.delete.useMutation({
     onSuccess: () => {
       message.success("Review deleted successfully");
-      reviewsQuery.refetch(); // Refetch reviews after deletion
+      reviewsQuery.refetch();
     },
     onError: () => {
       message.error("Failed to delete review");
     },
   });
 
-  const editReviewMutation = trpc.reviews.editReview.useMutation({
+  const editReviewMutation = trpc.reviews.create.useMutation({
     onSuccess: () => {
       message.success("Review updated successfully");
       setIsEditModalVisible(false);
-      reviewsQuery.refetch(); // Refetch reviews after editing
+      reviewsQuery.refetch();
     },
     onError: () => {
       message.error("Failed to update review");
@@ -49,12 +56,12 @@ const MovieReviews = () => {
     return <div>Error loading reviews</div>;
   }
 
-  const reviews = reviewsQuery.data;
-  const length = (reviews || []).length;
+  const reviews: Review[] = reviewsQuery.data || [];
+  const length = reviews.length;
   const avgRating =
-    (reviews || []).reduce((acc, review) => acc + review.rating, 0) / length;
+    reviews.reduce((acc, review) => acc + review.rating, 0) / length;
 
-  const showEditModal = (review) => {
+  const showEditModal = (review: Review) => {
     setSelectedReview(review);
     setNewComments(review.comments);
     setNewRating(review.rating);
@@ -62,21 +69,25 @@ const MovieReviews = () => {
   };
 
   const handleEditOk = () => {
-    editReviewMutation.mutate({
-      id: selectedReview.id,
-      comments: newComments,
-      rating: newRating,
-    });
+    if (selectedReview) {
+      editReviewMutation.mutate({
+        movieId: Number(movieId),
+        comments: newComments,
+        rating: newRating,
+      });
+    }
   };
 
-  const showDeleteModal = (review) => {
+  const showDeleteModal = (review: Review) => {
     setSelectedReview(review);
     setIsDeleteModalVisible(true);
   };
 
   const handleDeleteOk = () => {
-    deleteReviewMutation.mutate(selectedReview.id);
-    setIsDeleteModalVisible(false);
+    if (selectedReview && selectedReview.id !== null) {
+      deleteReviewMutation.mutate({ id: selectedReview.id });
+      setIsDeleteModalVisible(false);
+    }
   };
 
   return (
@@ -94,12 +105,9 @@ const MovieReviews = () => {
         ) : (
           reviews.map((review) => (
             <div key={review.id} className="border p-4 rounded-md shadow-md">
-              {/* Comments */}
               <p className="text-lg mb-2">
                 <strong>Comments:</strong> {review.comments}
               </p>
-
-              {/* Rating */}
               <div className="flex justify-between items-center mt-4">
                 <p className="text-sm italic text-gray-600">
                   <strong>Reviewer:</strong> {review.reviewer || "Anonymous"}
@@ -120,7 +128,6 @@ const MovieReviews = () => {
         )}
       </div>
 
-      {/* Edit Review Modal */}
       <Modal
         title="Edit Review"
         visible={isEditModalVisible}
@@ -135,7 +142,6 @@ const MovieReviews = () => {
         <Rate className="mt-4" value={newRating} onChange={setNewRating} />
       </Modal>
 
-      {/* Delete Confirmation Modal */}
       <Modal
         title="Confirm Delete"
         visible={isDeleteModalVisible}
