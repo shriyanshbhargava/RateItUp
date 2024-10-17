@@ -202,34 +202,35 @@ export default function MovieCritic() {
             movie.name.toLowerCase().includes(searchTerm.toLowerCase())
           )
           .map((movie: MovieReview) => (
-            <Link
-              key={movie.id}
-              href={`/reviews/${movie.id}-${movie.name}`}
-              passHref
-            >
-              <Card
-                title={movie.name}
-                extra={
-                  <span>
-                    {movie.avgRating !== null
-                      ? movie.avgRating.toFixed(1)
-                      : "N/A"}
-                  </span>
-                }
-                actions={[
-                  <EditOutlined
-                    key="edit"
-                    onClick={() => handleEditClick(movie)}
-                  />,
-                  <DeleteOutlined
-                    key="delete"
-                    onClick={() => handleDeleteClick(movie.id.toString())}
-                  />,
-                ]}
-              >
-                <p>Release Date: {formatReleaseDate(movie.releaseDate)}</p>
-              </Card>
+            <Card
+            key={movie.id}
+            title={
+              <Link href={`/reviews/${movie.id}-${movie.name}`} passHref>
+                {movie.name}
+              </Link>
+            }
+            extra={
+              <span>
+                {movie.avgRating !== null ? movie.avgRating.toFixed(1) : "N/A"}
+              </span>
+            }
+            actions={[
+              <EditOutlined
+                key="edit"
+                onClick={() => handleEditClick(movie)}
+              />,
+              <DeleteOutlined
+                key="delete"
+                onClick={() => handleDeleteClick(movie.id.toString())}
+              />,
+            ]}
+          >
+            <Link href={`/reviews/${movie.id}-${movie.name}`} passHref>
+              <p>Release Date: {formatReleaseDate(movie.releaseDate)}</p>
             </Link>
+          </Card>
+          
+          
           ))}
       </div>
 
