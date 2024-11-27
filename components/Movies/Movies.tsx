@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Modal, Card, Select, Switch } from "antd";
+import { Button, Input, Modal, Card, Select, Switch, Rate, message } from "antd";
 import Link from "next/link";
 import {
   SearchOutlined,
@@ -71,6 +71,7 @@ export default function MovieCritic() {
             setName("");
             setReleaseDate("");
             moviesQuery.refetch();
+            message.success("Movie added successfully");
           },
         }
       );
@@ -95,6 +96,7 @@ export default function MovieCritic() {
             setComments("");
             setIsAnonymous(false);
             moviesQuery.refetch();
+            message.success("Review Added successfully");
           },
         }
       );
@@ -116,6 +118,7 @@ export default function MovieCritic() {
             setEditName("");
             setEditReleaseDate("");
             moviesQuery.refetch();
+            message.success("Movie Edited successfully");
           },
         }
       );
@@ -131,6 +134,7 @@ export default function MovieCritic() {
             setIsDeleteConfirmationVisible(false);
             setEditMovieId(undefined);
             moviesQuery.refetch();
+            message.success("Movie Deleted successfully");
           },
         }
       );
@@ -161,14 +165,14 @@ export default function MovieCritic() {
             type="primary"
             icon={<PlusCircleOutlined />}
             onClick={() => setIsAddMovieModalVisible(true)}
-            className="bg-red-500 hover:bg-red-600 border-none h-12 px-6 text-lg"
+            className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 h-12 px-6 text-lg transition-all backdrop-blur-sm"
           >
             Add New Movie
           </Button>
           <Button
             icon={<PlusCircleOutlined />}
             onClick={() => setIsAddReviewModalVisible(true)}
-            className="border-white/20 text-black hover:text-black hover:border-white/40 h-12 px-6 text-lg"
+            className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 h-12 px-6 text-lg transition-all backdrop-blur-sm"
           >
             Add New Review
           </Button>
@@ -183,17 +187,17 @@ export default function MovieCritic() {
             .map((movie: MovieReview) => (
               <Card
                 key={movie.id}
-                className="bg-[#222222] border-[#333333] hover:border-[#444444] transition-all "
+                className="bg-[#1a1a1a] border-purple-900/20 hover:border-teal-500/30 transition-all backdrop-blur-sm"
                 title={
                   <Link
                     href={`/reviews/${movie.id}-${movie.name}`}
-                    className="text-white hover:text-red-500 transition-colors"
+                    className="text-white hover:text-teal-400 transition-colors"
                   >
                     {movie.name}
                   </Link>
                 }
                 extra={
-                  <span className="flex items-center text-yellow-500">
+                  <span className="flex items-center text-teal-400">
                     <StarFilled className="mr-1" />
                     {movie.avgRating !== null
                       ? movie.avgRating.toFixed(1)
@@ -202,14 +206,14 @@ export default function MovieCritic() {
                 }
               >
                 <div className="space-y-4">
-                  <p className="text-gray-400">
+                  <p className="text-zinc-400">
                     Release Date: {formatReleaseDate(movie.releaseDate)}
                   </p>
-                  <hr className="border-[#333333]" />
+                  <hr className="border-purple-900/20" />
                   <div className="flex">
                     <div className="flex-1 flex justify-center items-center cursor-pointer">
                       <EditOutlined
-                        className="text-white"
+                        className="text-zinc-300 hover:text-teal-400 transition-colors"
                         onClick={() => {
                           setEditMovieId(movie.id);
                           setEditName(movie.name);
@@ -219,11 +223,11 @@ export default function MovieCritic() {
                       />
                     </div>
                     
-                    <div className="text-white opacity-50 flex items-center">|</div>
+                    <div className="text-purple-900/30 flex items-center">|</div>
                     
                     <div className="flex-1 flex justify-center items-center cursor-pointer">
                       <DeleteOutlined
-                        className="text-white hover:text-red-500"
+                        className="text-zinc-300 hover:text-red-400 transition-colors"
                         onClick={() => {
                           setEditMovieId(movie.id);
                           setIsDeleteConfirmationVisible(true);
@@ -241,10 +245,11 @@ export default function MovieCritic() {
       <Modal
         title={<span className="text-lg">Add Movie</span>}
         open={isAddMovieModalVisible}
+      
         onOk={handleAddMovie}
         onCancel={() => setIsAddMovieModalVisible(false)}
         okText="Submit"
-        okButtonProps={{ className: "bg-red-500 hover:bg-red-600" }}
+        okButtonProps={{ className: "bg-[#1a1a1a] hover:bg-teal-500/30 border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 transition-all backdrop-blur-sm" }}
       >
         <div className="flex flex-col gap-4">
           <div>
@@ -347,21 +352,7 @@ export default function MovieCritic() {
           {/* Star Rating */}
           <div>
             <p className="text-black mb-2">Rating:</p>
-            <div className="flex items-center gap-2">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <span
-                  key={index}
-                  className={`cursor-pointer text-2xl ${
-                    rating !== undefined && index < rating
-                      ? "text-yellow-500"
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setRating(index + 1)}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
+            <Rate value={rating} onChange={setRating} className="text-yellow-500 " />
           </div>
         </div>
       </Modal>

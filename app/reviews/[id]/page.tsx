@@ -101,7 +101,7 @@ const MovieReviews = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Reviews for {movieName}</h1>
-          <div className="flex items-center bg-[#222222] rounded-full px-4 py-2">
+          <div className="flex items-center bg-[#7f5b5b] rounded-full px-4 py-2">
             <StarFilled className="text-yellow-500 mr-2" />
             <span className="text-2xl">
               {avgRating > 0 ? avgRating.toFixed(1) : "N/A"}
@@ -127,14 +127,14 @@ const MovieReviews = () => {
                     <Button
                       icon={<EditOutlined />}
                       onClick={() => showEditModal(review)}
-                      className="bg-blue-500 border-blue-500 hover:bg-blue-600 hover:border-blue-600 text-white"
+                      className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 transition-all backdrop-blur-sm"
                     >
                       Edit
                     </Button>
                     <Button
                       icon={<DeleteOutlined />}
                       onClick={() => showDeleteModal(review)}
-                      className="bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600 text-white"
+                      className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-red-400 hover:text-teal-400 transition-all backdrop-blur-sm"
                     >
                       Delete
                     </Button>
