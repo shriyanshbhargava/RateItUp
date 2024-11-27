@@ -35,6 +35,40 @@ export default function Home() {
         <div className="px-2">
           <MoviesPage />
         </div>
+
+        {/* Footer */}
+        <footer className="text-center py-8 mt-16 border-t border-purple-900/20">
+          <div className="space-y-2">
+            <p className="text-zinc-500 text-sm tracking-wide font-light">
+              © {new Date().getFullYear()} RateItUp. All rights reserved.
+            </p>
+            <p className="text-zinc-400 font-light">
+              Created by:{" "}
+              <a 
+                href="https://shriyansh.vercel.app" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-teal-400 hover:text-teal-300 transition-colors font-normal group inline-flex items-center gap-1"
+              >
+                Shriyansh Bhargava
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  strokeWidth={1.5} 
+                  stroke="currentColor" 
+                  className="w-4 h-4 mb-0.5"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" 
+                  />
+                </svg>
+              </a>
+            </p>
+          </div>
+        </footer>
       </div>
     </main>
   );
