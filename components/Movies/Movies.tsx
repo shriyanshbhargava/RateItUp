@@ -78,9 +78,14 @@ export default function MovieCritic() {
   };
 
   const handleAddReview = () => {
-    if (movieId && reviewer && rating !== undefined && comments) {
+    if (movieId && rating !== undefined && comments) {
       addReviewMutation.mutate(
-        { movieId: Number(movieId), reviewer, rating, comments },
+        {
+          movieId: Number(movieId),
+          reviewer: isAnonymous ? undefined : reviewer,
+          rating,
+          comments,
+        },
         {
           onSettled: () => {
             setIsAddReviewModalVisible(false);
@@ -88,6 +93,7 @@ export default function MovieCritic() {
             setReviewer("");
             setRating(undefined);
             setComments("");
+            setIsAnonymous(false);
             moviesQuery.refetch();
           },
         }
@@ -169,7 +175,7 @@ export default function MovieCritic() {
         </div>
 
         {/* Movie Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {moviesQuery.data
             ?.filter((movie) =>
               movie.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -177,7 +183,7 @@ export default function MovieCritic() {
             .map((movie: MovieReview) => (
               <Card
                 key={movie.id}
-                className="bg-[#222222] border-[#333333] hover:border-[#444444] transition-all"
+                className="bg-[#222222] border-[#333333] hover:border-[#444444] transition-all "
                 title={
                   <Link
                     href={`/reviews/${movie.id}-${movie.name}`}
@@ -194,30 +200,38 @@ export default function MovieCritic() {
                       : "N/A"}
                   </span>
                 }
-                actions={[
-                  <EditOutlined
-                    key="edit"
-                    className="text-gray-400 hover:text-white"
-                    onClick={() => {
-                      setEditMovieId(movie.id);
-                      setEditName(movie.name);
-                      setEditReleaseDate(movie.releaseDate);
-                      setIsEditMovieModalVisible(true);
-                    }}
-                  />,
-                  <DeleteOutlined
-                    key="delete"
-                    className="text-gray-400 hover:text-red-500"
-                    onClick={() => {
-                      setEditMovieId(movie.id);
-                      setIsDeleteConfirmationVisible(true);
-                    }}
-                  />,
-                ]}
               >
-                <p className="text-gray-400">
-                  Release Date: {formatReleaseDate(movie.releaseDate)}
-                </p>
+                <div className="space-y-4">
+                  <p className="text-gray-400">
+                    Release Date: {formatReleaseDate(movie.releaseDate)}
+                  </p>
+                  <hr className="border-[#333333]" />
+                  <div className="flex">
+                    <div className="flex-1 flex justify-center items-center cursor-pointer">
+                      <EditOutlined
+                        className="text-white"
+                        onClick={() => {
+                          setEditMovieId(movie.id);
+                          setEditName(movie.name);
+                          setEditReleaseDate(movie.releaseDate);
+                          setIsEditMovieModalVisible(true);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="text-white opacity-50 flex items-center">|</div>
+                    
+                    <div className="flex-1 flex justify-center items-center cursor-pointer">
+                      <DeleteOutlined
+                        className="text-white hover:text-red-500"
+                        onClick={() => {
+                          setEditMovieId(movie.id);
+                          setIsDeleteConfirmationVisible(true);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </Card>
             ))}
         </div>
@@ -338,7 +352,9 @@ export default function MovieCritic() {
                 <span
                   key={index}
                   className={`cursor-pointer text-2xl ${
-                    index < rating ? "text-yellow-500" : "text-gray-500 "
+                    rating !== undefined && index < rating
+                      ? "text-yellow-500"
+                      : "text-gray-500"
                   }`}
                   onClick={() => setRating(index + 1)}
                 >

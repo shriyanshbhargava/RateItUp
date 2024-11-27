@@ -79,7 +79,7 @@ const MovieReviews = () => {
         movieId: Number(movieId),
         comments: newComments,
         rating: newRating,
-        reviewer: isAnonymous ? null : newReviewer,
+        reviewer: isAnonymous ? undefined : newReviewer,
       });
     }
   };
