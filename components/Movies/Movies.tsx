@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Modal, Card, Select } from "antd";
+import { Button, Input, Modal, Card, Select, Switch } from "antd";
 import Link from "next/link";
-
 import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
+  PlusOutlined,
+  StarFilled,
+  ClockCircleOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import { trpc } from "@/server/client";
 
@@ -31,57 +34,34 @@ const formatReleaseDate = (dateString: string) => {
 export default function MovieCritic() {
   const moviesQuery = trpc.movies.getAll.useQuery();
   const addMovie = trpc.movies.create.useMutation();
-  const updateMovie = trpc.movies.update.useMutation({
-    onSuccess: () => {
-      console.log("Movie updated successfully!");
-    },
-    onError: (error) => {
-      console.error("Error updating movie:", error);
-    },
-  });
-  const deleteMovie = trpc.movies.delete.useMutation({
-    onSuccess: () => {
-      console.log("Movie deleted successfully!");
-    },
-    onError: (error) => {
-      console.error("Error deleting movie:", error);
-    },
-  });
+  const updateMovie = trpc.movies.update.useMutation();
+  const deleteMovie = trpc.movies.delete.useMutation();
   const addReviewMutation = trpc.reviews.create.useMutation();
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isAddMovieModalVisible, setIsAddMovieModalVisible] =
     useState<boolean>(false);
   const [isAddReviewModalVisible, setIsAddReviewModalVisible] =
     useState<boolean>(false);
+  const [isEditMovieModalVisible, setIsEditMovieModalVisible] =
+    useState<boolean>(false);
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [releaseDate, setReleaseDate] = useState<string>("");
-
-  const [movieId, setMovieId] = useState<string | undefined>(undefined);
+  const [movieId, setMovieId] = useState<string>("");
   const [reviewer, setReviewer] = useState<string>("");
   const [rating, setRating] = useState<number | undefined>(undefined);
   const [comments, setComments] = useState<string>("");
-
-  const [isEditMovieModalVisible, setIsEditMovieModalVisible] =
-    useState<boolean>(false);
   const [editMovieId, setEditMovieId] = useState<string | number | undefined>(
     undefined
   );
   const [editName, setEditName] = useState<string>("");
   const [editReleaseDate, setEditReleaseDate] = useState<string>("");
 
-  const showAddMovieModal = () => {
-    setIsAddMovieModalVisible(true);
-  };
-
-  const showAddReviewModal = () => {
-    setIsAddReviewModalVisible(true);
-  };
-
-  const handleAddMovieOk = () => {
+  const handleAddMovie = () => {
     if (name && releaseDate) {
       addMovie.mutate(
         { name, releaseDate },
@@ -97,14 +77,14 @@ export default function MovieCritic() {
     }
   };
 
-  const handleAddReviewOk = () => {
+  const handleAddReview = () => {
     if (movieId && reviewer && rating !== undefined && comments) {
       addReviewMutation.mutate(
         { movieId: Number(movieId), reviewer, rating, comments },
         {
           onSettled: () => {
             setIsAddReviewModalVisible(false);
-            setMovieId(undefined);
+            setMovieId("");
             setReviewer("");
             setRating(undefined);
             setComments("");
@@ -115,14 +95,7 @@ export default function MovieCritic() {
     }
   };
 
-  const handleEditClick = (movie: MovieReview) => {
-    setEditMovieId(movie.id);
-    setEditName(movie.name);
-    setEditReleaseDate(movie.releaseDate);
-    setIsEditMovieModalVisible(true);
-  };
-
-  const handleEditMovieOk = () => {
+  const handleEditMovie = () => {
     if (editMovieId && editName && editReleaseDate) {
       updateMovie.mutate(
         {
@@ -143,12 +116,7 @@ export default function MovieCritic() {
     }
   };
 
-  const handleDeleteClick = (movieId: string) => {
-    setEditMovieId(movieId);
-    setIsDeleteConfirmationVisible(true);
-  };
-
-  const handleDeleteConfirmation = () => {
+  const handleDeleteMovie = () => {
     if (editMovieId) {
       deleteMovie.mutate(
         { id: Number(editMovieId) },
@@ -158,170 +126,269 @@ export default function MovieCritic() {
             setEditMovieId(undefined);
             moviesQuery.refetch();
           },
-          onError: (error) => {
-            console.error("Error deleting movie:", error);
-          },
         }
       );
     }
   };
 
-  const handleCancel = () => {
-    setIsAddMovieModalVisible(false);
-    setIsAddReviewModalVisible(false);
-    setIsEditMovieModalVisible(false);
-    setIsDeleteConfirmationVisible(false);
-  };
-
   return (
-    <div className="container mx-auto p-4">
-      <header className="flex justify-between items-center mb-8 bg-gray-100 p-4 rounded-lg">
-        <h1 className="text-2xl font-bold">MOVIECRITIC</h1>
-        <div className="space-x-2">
-          <Button type="primary" onClick={showAddMovieModal}>
-            Add new movie
+    <div className="min-h-screen ">
+      {/* Search Bar */}
+      <div className="flex justify-center mb-8">
+        <div className="flex items-center h-12 w-[35rem] bg-white bg-opacity-20 backdrop-blur-lg text-white rounded-lg">
+          <span className="flex items-center justify-center px-3 text-gray-300">
+            <SearchOutlined className="text-gray-300 text-lg" />
+          </span>
+          <input
+            type="text"
+            placeholder="Search for your favourite movie"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 bg-transparent text-white placeholder-gray-300 focus:text-white outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4">
+        <div className="flex justify-center gap-4 mb-24">
+          <Button
+            type="primary"
+            icon={<PlusCircleOutlined />}
+            onClick={() => setIsAddMovieModalVisible(true)}
+            className="bg-red-500 hover:bg-red-600 border-none h-12 px-6 text-lg"
+          >
+            Add New Movie
           </Button>
-          <Button onClick={showAddReviewModal}>Add new review</Button>
-        </div>
-      </header>
-
-      <h2 className="text-3xl font-bold mb-6">The best movie reviews site!</h2>
-
-      <div className="relative mb-8">
-        <Input
-          prefix={<SearchOutlined />}
-          placeholder="Search for your favourite movie"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {moviesQuery.data
-          ?.filter((movie) =>
-            movie.name.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((movie: MovieReview) => (
-            <Card
-            key={movie.id}
-            title={
-              <Link href={`/reviews/${movie.id}-${movie.name}`} passHref>
-                {movie.name}
-              </Link>
-            }
-            extra={
-              <span>
-                {movie.avgRating !== null ? movie.avgRating.toFixed(1) : "N/A"}
-              </span>
-            }
-            actions={[
-              <EditOutlined
-                key="edit"
-                onClick={() => handleEditClick(movie)}
-              />,
-              <DeleteOutlined
-                key="delete"
-                onClick={() => handleDeleteClick(movie.id.toString())}
-              />,
-            ]}
+          <Button
+            icon={<PlusCircleOutlined />}
+            onClick={() => setIsAddReviewModalVisible(true)}
+            className="border-white/20 text-black hover:text-black hover:border-white/40 h-12 px-6 text-lg"
           >
-            <Link href={`/reviews/${movie.id}-${movie.name}`} passHref>
-              <p>Release Date: {formatReleaseDate(movie.releaseDate)}</p>
-            </Link>
-          </Card>
-          
-          
-          ))}
-      </div>
-
-      <Modal
-        title="Add Movie"
-        visible={isAddMovieModalVisible}
-        onOk={handleAddMovieOk}
-        onCancel={handleCancel}
-        okText="Submit"
-      >
-        <div className="flex flex-col gap-3">
-          <p>Name:</p>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
-          <p>Release Date:</p>
-          <Input
-            type="date"
-            value={releaseDate}
-            onChange={(e) => setReleaseDate(e.target.value)}
-          />
+            Add New Review
+          </Button>
         </div>
-      </Modal>
 
-      <Modal
-        title="Add Review"
-        visible={isAddReviewModalVisible}
-        onOk={handleAddReviewOk}
-        onCancel={handleCancel}
-        okText="Submit"
-      >
-        <div className="flex flex-col gap-3">
-          <Select
-            placeholder="Select a movie"
-            value={movieId}
-            onChange={(value) => setMovieId(value)}
-          >
-            {moviesQuery.data?.map((movie: MovieReview) => (
-              <Select.Option key={movie.id} value={movie.id}>
-                {movie.name}
-              </Select.Option>
+        {/* Movie Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {moviesQuery.data
+            ?.filter((movie) =>
+              movie.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((movie: MovieReview) => (
+              <Card
+                key={movie.id}
+                className="bg-[#222222] border-[#333333] hover:border-[#444444] transition-all"
+                title={
+                  <Link
+                    href={`/reviews/${movie.id}-${movie.name}`}
+                    className="text-white hover:text-red-500 transition-colors"
+                  >
+                    {movie.name}
+                  </Link>
+                }
+                extra={
+                  <span className="flex items-center text-yellow-500">
+                    <StarFilled className="mr-1" />
+                    {movie.avgRating !== null
+                      ? movie.avgRating.toFixed(1)
+                      : "N/A"}
+                  </span>
+                }
+                actions={[
+                  <EditOutlined
+                    key="edit"
+                    className="text-gray-400 hover:text-white"
+                    onClick={() => {
+                      setEditMovieId(movie.id);
+                      setEditName(movie.name);
+                      setEditReleaseDate(movie.releaseDate);
+                      setIsEditMovieModalVisible(true);
+                    }}
+                  />,
+                  <DeleteOutlined
+                    key="delete"
+                    className="text-gray-400 hover:text-red-500"
+                    onClick={() => {
+                      setEditMovieId(movie.id);
+                      setIsDeleteConfirmationVisible(true);
+                    }}
+                  />,
+                ]}
+              >
+                <p className="text-gray-400">
+                  Release Date: {formatReleaseDate(movie.releaseDate)}
+                </p>
+              </Card>
             ))}
-          </Select>
-          <p>Reviewer Name:</p>
-          <Input
-            value={reviewer}
-            onChange={(e) => setReviewer(e.target.value)}
-          />
-          <p>Rating:</p>
-          <Input
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(parseFloat(e.target.value))}
-          />
-          <p>Comments:</p>
-          <Input.TextArea
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-          />
+        </div>
+      </div>
+
+      {/* Modals */}
+      <Modal
+        title={<span className="text-lg">Add Movie</span>}
+        open={isAddMovieModalVisible}
+        onOk={handleAddMovie}
+        onCancel={() => setIsAddMovieModalVisible(false)}
+        okText="Submit"
+        okButtonProps={{ className: "bg-red-500 hover:bg-red-600" }}
+      >
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-gray-400 mb-2">Name:</p>
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div>
+            <p className="text-gray-400 mb-2">Release Date:</p>
+            <Input
+              type="date"
+              value={releaseDate}
+              onChange={(e) => setReleaseDate(e.target.value)}
+            />
+          </div>
         </div>
       </Modal>
 
       <Modal
-        title="Edit Movie"
-        visible={isEditMovieModalVisible}
-        onOk={handleEditMovieOk}
+        title={<span className="text-lg">Add Review</span>}
+        open={isAddReviewModalVisible}
+        onOk={handleAddReview}
+        onCancel={() => setIsAddReviewModalVisible(false)}
+        okText="OK"
+        okButtonProps={{
+          className:
+            "bg-blue-500 text-white hover:bg-blue-600 rounded px-4 py-2",
+        }}
+        cancelButtonProps={{
+          className: "text-gray-500 hover:text-gray-700",
+        }}
+      >
+        <div className="flex flex-col gap-4 ">
+          {/* Movie Selection */}
+          <div>
+            <p className="text-black mb-2">Select Movie:</p>
+            <Select
+              placeholder="Select a movie"
+              value={movieId}
+              onChange={(value) => setMovieId(value)}
+              className="w-full rounded"
+            >
+              {moviesQuery.data?.map((movie: MovieReview) => (
+                <Select.Option key={movie.id} value={movie.id.toString()}>
+                  {movie.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Anonymous/Named Toggle */}
+          <div className="flex items-center justify-between">
+            <p className="text-black">Reviewer Type:</p>
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-sm ${
+                  !isAnonymous ? "text-blue-600" : "text-black"
+                }`}
+              >
+                Named
+              </span>
+              <Switch
+                checked={isAnonymous}
+                onChange={(checked) => setIsAnonymous(checked)}
+              />
+              <span
+                className={`text-sm ${
+                  isAnonymous ? "text-blue-600" : "text-black"
+                }`}
+              >
+                Anonymous
+              </span>
+            </div>
+          </div>
+
+          {/* Reviewer Name Input */}
+          {!isAnonymous && (
+            <div>
+              <p className="text-black mb-2">Reviewer Name:</p>
+              <Input
+                value={reviewer}
+                onChange={(e) => setReviewer(e.target.value)}
+                placeholder="Enter your name"
+                className="rounded"
+              />
+            </div>
+          )}
+
+          {/* Comments Input */}
+          <div>
+            <p className="text-black mb-2">Comments:</p>
+            <Input.TextArea
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              rows={4}
+              placeholder="Write your review here"
+              className="rounded"
+            />
+          </div>
+
+          {/* Star Rating */}
+          <div>
+            <p className="text-black mb-2">Rating:</p>
+            <div className="flex items-center gap-2">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <span
+                  key={index}
+                  className={`cursor-pointer text-2xl ${
+                    index < rating ? "text-yellow-500" : "text-gray-500 "
+                  }`}
+                  onClick={() => setRating(index + 1)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        title={<span className="text-lg">Edit Movie</span>}
+        open={isEditMovieModalVisible}
+        onOk={handleEditMovie}
         onCancel={() => setIsEditMovieModalVisible(false)}
         okText="Update"
+        okButtonProps={{ className: "bg-red-500 hover:bg-red-600" }}
       >
-        <div className="flex flex-col gap-3">
-          <p>Name:</p>
-          <Input
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-          />
-          <p>Release Date:</p>
-          <Input
-            type="date"
-            value={editReleaseDate}
-            onChange={(e) => setEditReleaseDate(e.target.value)}
-          />
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-gray-400 mb-2">Name:</p>
+            <Input
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+            />
+          </div>
+          <div>
+            <p className="text-gray-400 mb-2">Release Date:</p>
+            <Input
+              type="date"
+              value={editReleaseDate}
+              onChange={(e) => setEditReleaseDate(e.target.value)}
+            />
+          </div>
         </div>
       </Modal>
 
       <Modal
-        title="Confirm Deletion"
-        visible={isDeleteConfirmationVisible}
-        onOk={handleDeleteConfirmation}
-        onCancel={handleCancel}
+        title={<span className="text-lg">Confirm Deletion</span>}
+        open={isDeleteConfirmationVisible}
+        onOk={handleDeleteMovie}
+        onCancel={() => setIsDeleteConfirmationVisible(false)}
         okText="Delete"
+        okButtonProps={{ className: "bg-red-500 hover:bg-red-600" }}
         cancelText="Cancel"
       >
-        <p>Are you sure you want to delete this movie?</p>
+        <p className="text-gray-400">
+          Are you sure you want to delete this movie?
+        </p>
       </Modal>
     </div>
   );
