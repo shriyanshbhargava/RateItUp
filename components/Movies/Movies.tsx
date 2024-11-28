@@ -196,64 +196,64 @@ export default function MovieCritic() {
               movie.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((movie: MovieReview) => (
-              <Link
+              <Card
                 key={movie.id}
-                href={`/reviews/${movie.id}-${movie.name}`}
-                className="block"
+                className="bg-[#1a1a1a] border-purple-900/20 hover:border-teal-500/30 transition-all backdrop-blur-sm"
+                title={
+                  <Link
+                    href={`/reviews/${movie.id}-${movie.name}`}
+                    className="text-white hover:text-teal-400 transition-colors"
+                  >
+                    {movie.name}
+                  </Link>
+                }
+                extra={
+                  <span className="flex items-center text-teal-400">
+                    <StarFilled className="mr-1" />
+                    {movie.avgRating !== null
+                      ? movie.avgRating.toFixed(1)
+                      : "N/A"}
+                  </span>
+                }
               >
-                <Card
-                  className="bg-[#1a1a1a] border-purple-900/20 hover:border-teal-500/30 transition-all backdrop-blur-sm h-full"
-                  title={
-                    <span className="text-white hover:text-teal-400 transition-colors">
-                      {movie.name}
-                    </span>
-                  }
-                  extra={
-                    <span className="flex items-center text-teal-400">
-                      <StarFilled className="mr-1" />
-                      {movie.avgRating !== null
-                        ? movie.avgRating.toFixed(1)
-                        : "N/A"}
-                    </span>
-                  }
-                >
-                  <div className="space-y-4">
-                    <p className="text-zinc-400">
-                      Release Date: {formatReleaseDate(movie.releaseDate)}
-                    </p>
-                    <hr className="border-purple-900/20" />
-                    <div className="flex">
-                      <div
-                        className="flex-1 flex justify-center items-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditMovieId(movie.id);
-                          setEditName(movie.name);
-                          setEditReleaseDate(movie.releaseDate);
-                          setIsEditMovieModalVisible(true);
-                        }}
-                      >
-                        <EditOutlined className="text-zinc-300 hover:text-teal-400 transition-colors" />
-                      </div>
+                <div className="space-y-4">
+                  <p className="text-zinc-400">
+                    Release Date: {formatReleaseDate(movie.releaseDate)}
+                  </p>
+                  <hr className="border-purple-900/20" />
+                  <div className="flex">
+                    <div
+                      className="flex-1 flex justify-center items-center cursor-pointer"
+                      onClickCapture={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setEditMovieId(movie.id);
+                        setEditName(movie.name);
+                        setEditReleaseDate(movie.releaseDate);
+                        setIsEditMovieModalVisible(true);
+                      }}
+                    >
+                      <EditOutlined className="text-zinc-300 hover:text-teal-400 transition-colors" />
+                    </div>
 
-                      <div className="text-purple-900/30 flex items-center">
-                        |
-                      </div>
+                    <div className="text-purple-900/30 flex items-center">
+                      |
+                    </div>
 
-                      <div
-                        className="flex-1 flex justify-center items-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditMovieId(movie.id);
-                          setIsDeleteConfirmationVisible(true);
-                        }}
-                      >
-                        <DeleteOutlined className="text-zinc-300 hover:text-red-400 transition-colors" />
-                      </div>
+                    <div
+                      className="flex-1 flex justify-center items-center cursor-pointer"
+                      onClickCapture={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setEditMovieId(movie.id);
+                        setIsDeleteConfirmationVisible(true);
+                      }}
+                    >
+                      <DeleteOutlined className="text-zinc-300 hover:text-red-400 transition-colors" />
                     </div>
                   </div>
-                </Card>
-              </Link>
+                </div>
+              </Card>
             ))}
         </div>
       </div>
