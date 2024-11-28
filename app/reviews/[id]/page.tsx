@@ -102,8 +102,10 @@ const MovieReviews = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white">
+    <div className="min-h-screen bg-[#111111] relative text-white">
       <div className="container mx-auto px-4 py-8">
+        <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/10 via-transparent to-teal-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-purple-900/5 via-transparent to-teal-500/5" />
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-center md:text-left w-full md:w-auto">
             Reviews for {movieName}
@@ -117,7 +119,11 @@ const MovieReviews = () => {
         </div>
 
         <div className="space-y-6">
-          {reviews.length === 0 ? (
+          {reviewsQuery.isLoading ? (
+            <div className="flex justify-center items-center w-full h-64">
+              <div className="loader"></div>
+            </div>
+          ) : reviews.length === 0 ? (
             <p className="text-gray-400 text-center py-8">
               No reviews for this movie yet.
             </p>

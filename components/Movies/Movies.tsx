@@ -191,70 +191,76 @@ export default function MovieCritic() {
 
         {/* Movie Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-          {moviesQuery.data
-            ?.filter((movie) =>
-              movie.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((movie: MovieReview) => (
-              <Card
-                key={movie.id}
-                className="bg-[#1a1a1a] border-purple-900/20 hover:border-teal-500/30 transition-all backdrop-blur-sm"
-                title={
-                  <Link
-                    href={`/reviews/${movie.id}-${movie.name}`}
-                    className="text-white hover:text-teal-400 transition-colors"
-                  >
-                    {movie.name}
-                  </Link>
-                }
-                extra={
-                  <span className="flex items-center text-teal-400">
-                    <StarFilled className="mr-1" />
-                    {movie.avgRating !== null
-                      ? movie.avgRating.toFixed(1)
-                      : "N/A"}
-                  </span>
-                }
-              >
-                <div className="space-y-4">
-                  <p className="text-zinc-400">
-                    Release Date: {formatReleaseDate(movie.releaseDate)}
-                  </p>
-                  <hr className="border-purple-900/20" />
-                  <div className="flex">
-                    <div
-                      className="flex-1 flex justify-center items-center cursor-pointer"
-                      onClickCapture={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setEditMovieId(movie.id);
-                        setEditName(movie.name);
-                        setEditReleaseDate(movie.releaseDate);
-                        setIsEditMovieModalVisible(true);
-                      }}
+          {moviesQuery.isLoading ? (
+            <div className="flex justify-center items-center w-full h-64 ml-[31rem]">
+              <div className="loader "></div>
+            </div>
+          ) : (
+            moviesQuery.data
+              ?.filter((movie) =>
+                movie.name.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((movie: MovieReview) => (
+                <Card
+                  key={movie.id}
+                  className="bg-[#1a1a1a] border-purple-900/20 hover:border-teal-500/30 transition-all backdrop-blur-sm"
+                  title={
+                    <Link
+                      href={`/reviews/${movie.id}-${movie.name}`}
+                      className="text-white hover:text-teal-400 transition-colors"
                     >
-                      <EditOutlined className="text-zinc-300 hover:text-teal-400 transition-colors" />
-                    </div>
+                      {movie.name}
+                    </Link>
+                  }
+                  extra={
+                    <span className="flex items-center text-teal-400">
+                      <StarFilled className="mr-1" />
+                      {movie.avgRating !== null
+                        ? movie.avgRating.toFixed(1)
+                        : "N/A"}
+                    </span>
+                  }
+                >
+                  <div className="space-y-4">
+                    <p className="text-zinc-400">
+                      Release Date: {formatReleaseDate(movie.releaseDate)}
+                    </p>
+                    <hr className="border-purple-900/20" />
+                    <div className="flex">
+                      <div
+                        className="flex-1 flex justify-center items-center cursor-pointer"
+                        onClickCapture={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setEditMovieId(movie.id);
+                          setEditName(movie.name);
+                          setEditReleaseDate(movie.releaseDate);
+                          setIsEditMovieModalVisible(true);
+                        }}
+                      >
+                        <EditOutlined className="text-zinc-300 hover:text-teal-400 transition-colors" />
+                      </div>
 
-                    <div className="text-purple-900/30 flex items-center">
-                      |
-                    </div>
+                      <div className="text-purple-900/30 flex items-center">
+                        |
+                      </div>
 
-                    <div
-                      className="flex-1 flex justify-center items-center cursor-pointer"
-                      onClickCapture={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setEditMovieId(movie.id);
-                        setIsDeleteConfirmationVisible(true);
-                      }}
-                    >
-                      <DeleteOutlined className="text-zinc-300 hover:text-red-400 transition-colors" />
+                      <div
+                        className="flex-1 flex justify-center items-center cursor-pointer"
+                        onClickCapture={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setEditMovieId(movie.id);
+                          setIsDeleteConfirmationVisible(true);
+                        }}
+                      >
+                        <DeleteOutlined className="text-zinc-300 hover:text-red-400 transition-colors" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))
+          )}
         </div>
       </div>
 
