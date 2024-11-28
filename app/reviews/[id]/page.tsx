@@ -104,11 +104,13 @@ const MovieReviews = () => {
   return (
     <div className="min-h-screen bg-[#111111] text-white">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Reviews for {movieName}</h1>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-center md:text-left w-full md:w-auto">
+            Reviews for {movieName}
+          </h1>
           <div className="flex items-center bg-[#7f5b5b] rounded-full px-4 py-2">
-            <StarFilled className="text-yellow-500 mr-2" />
-            <span className="text-2xl">
+            <StarFilled className="text-yellow-500 mr-2 text-lg md:text-xl" />
+            <span className="text-xl md:text-2xl">
               {avgRating > 0 ? avgRating.toFixed(1) : "N/A"}
             </span>
           </div>
