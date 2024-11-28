@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Modal, Card, Select, Switch, Rate, message } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Card,
+  Select,
+  Switch,
+  Rate,
+  message,
+} from "antd";
 import Link from "next/link";
 import {
   SearchOutlined,
@@ -160,19 +169,21 @@ export default function MovieCritic() {
       </div>
 
       <div className="container mx-auto px-4">
-        <div className="flex justify-center gap-4 mb-24">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-12 sm:mb-24 px-4 sm:px-0">
           <Button
             type="primary"
             icon={<PlusCircleOutlined />}
             onClick={() => setIsAddMovieModalVisible(true)}
-            className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 h-12 px-6 text-lg transition-all backdrop-blur-sm"
+            className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 
+            h-10 sm:h-12 px-4 sm:px-6 text-base sm:text-lg transition-all backdrop-blur-sm w-full sm:w-auto"
           >
             Add New Movie
           </Button>
           <Button
             icon={<PlusCircleOutlined />}
             onClick={() => setIsAddReviewModalVisible(true)}
-            className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 h-12 px-6 text-lg transition-all backdrop-blur-sm"
+            className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 
+            h-10 sm:h-12 px-4 sm:px-6 text-base sm:text-lg transition-all backdrop-blur-sm w-full sm:w-auto"
           >
             Add New Review
           </Button>
@@ -222,9 +233,11 @@ export default function MovieCritic() {
                         }}
                       />
                     </div>
-                    
-                    <div className="text-purple-900/30 flex items-center">|</div>
-                    
+
+                    <div className="text-purple-900/30 flex items-center">
+                      |
+                    </div>
+
                     <div className="flex-1 flex justify-center items-center cursor-pointer">
                       <DeleteOutlined
                         className="text-zinc-300 hover:text-red-400 transition-colors"
@@ -245,11 +258,13 @@ export default function MovieCritic() {
       <Modal
         title={<span className="text-lg">Add Movie</span>}
         open={isAddMovieModalVisible}
-      
         onOk={handleAddMovie}
         onCancel={() => setIsAddMovieModalVisible(false)}
         okText="Submit"
-        okButtonProps={{ className: "bg-[#1a1a1a] hover:bg-teal-500/30 border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 transition-all backdrop-blur-sm" }}
+        okButtonProps={{
+          className:
+            "bg-[#1a1a1a] hover:bg-teal-500/30 border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 transition-all backdrop-blur-sm",
+        }}
       >
         <div className="flex flex-col gap-4">
           <div>
@@ -352,7 +367,11 @@ export default function MovieCritic() {
           {/* Star Rating */}
           <div>
             <p className="text-black mb-2">Rating:</p>
-            <Rate value={rating} onChange={setRating} className="text-yellow-500 " />
+            <Rate
+              value={rating}
+              onChange={setRating}
+              className="text-yellow-500 "
+            />
           </div>
         </div>
       </Modal>
