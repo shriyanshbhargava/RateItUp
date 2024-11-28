@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { trpc } from "../../../server/client";
 import { useParams } from "next/navigation";
-import { DeleteOutlined, EditOutlined, StarFilled, UserOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  StarFilled,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Modal, Input, Rate, message, Button, Switch } from "antd";
 
 interface Review {
@@ -111,34 +116,45 @@ const MovieReviews = () => {
 
         <div className="space-y-6">
           {reviews.length === 0 ? (
-            <p className="text-gray-400 text-center py-8">No reviews for this movie yet.</p>
+            <p className="text-gray-400 text-center py-8">
+              No reviews for this movie yet.
+            </p>
           ) : (
             reviews.map((review) => (
-              <div key={review.id} className="bg-[#222222] p-6 rounded-lg shadow-lg">
-                <p className="text-lg mb-4">{review.comments}</p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-400 mb-2">
-                      Reviewer: {review.reviewer || "Anonymous"}
-                    </p>
-                    <Rate disabled defaultValue={review.rating} className="text-yellow-500" />
+              <div
+                key={review.id}
+                className="bg-[#222222] p-4 md:p-6 rounded-lg shadow-lg flex flex-col md:flex-row"
+              >
+                <div className="flex-grow mb-4 md:mb-0 md:mr-4">
+                  <p className="text-base md:text-lg mb-4">{review.comments}</p>
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
+                    <div className="flex flex-col">
+                      <p className="text-sm text-gray-400 mb-2">
+                        Reviewer: {review.reviewer || "Anonymous"}
+                      </p>
+                      <Rate
+                        disabled
+                        defaultValue={review.rating}
+                        className="text-yellow-500 mb-2 md:mb-0"
+                      />
+                    </div>
                   </div>
-                  <div className="space-x-2">
-                    <Button
-                      icon={<EditOutlined />}
-                      onClick={() => showEditModal(review)}
-                      className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 transition-all backdrop-blur-sm"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      icon={<DeleteOutlined />}
-                      onClick={() => showDeleteModal(review)}
-                      className="bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-red-400 hover:text-teal-400 transition-all backdrop-blur-sm"
-                    >
-                      Delete
-                    </Button>
-                  </div>
+                </div>
+                <div className="flex flex-row md:flex-col justify-start md:justify-center space-x-2 md:space-x-0 md:space-y-2">
+                  <Button
+                    icon={<EditOutlined />}
+                    onClick={() => showEditModal(review)}
+                    className="flex-1 md:flex-none bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-white hover:text-teal-400 transition-all backdrop-blur-sm"
+                  >
+                    <span className="md:hidden">Edit</span>
+                  </Button>
+                  <Button
+                    icon={<DeleteOutlined />}
+                    onClick={() => showDeleteModal(review)}
+                    className="flex-1 md:flex-none bg-[#1a1a1a] border border-purple-900/20 hover:border-teal-500/30 text-red-400 hover:text-teal-400 transition-all backdrop-blur-sm"
+                  >
+                    <span className="md:hidden">Delete</span>
+                  </Button>
                 </div>
               </div>
             ))
@@ -177,7 +193,11 @@ const MovieReviews = () => {
             className="mb-4"
             rows={4}
           />
-          <Rate value={newRating} onChange={setNewRating} className="text-yellow-500" />
+          <Rate
+            value={newRating}
+            onChange={setNewRating}
+            className="text-yellow-500"
+          />
         </Modal>
 
         <Modal
@@ -197,4 +217,3 @@ const MovieReviews = () => {
 };
 
 export default MovieReviews;
-
