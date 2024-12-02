@@ -41,7 +41,7 @@ Check out **RateItUp** in action: [rate-it-up.vercel.app](https://rate-it-up.ver
 
 ## 💻 Technologies Used
 
-**Frontend**: React.js, Tailwind CSS  
+**Frontend**: Next.js, Typescript & Tailwind CSS  
 **Backend**: Node.js, Express.js, tRPC  
 **Database**: MySQL, Prisma  
 
