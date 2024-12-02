@@ -11,6 +11,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Modal, Input, Rate, message, Button, Switch } from "antd";
+import Link from "next/link";
 
 interface Review {
   id: number;
@@ -131,6 +132,13 @@ const MovieReviews = () => {
               {avgRating > 0 ? avgRating.toFixed(1) : "N/A"}
             </span>
           </div>
+        </div>
+        <div className="mb-8">
+          <Link href="/">
+            <Button className="bg-[#333333] text-white px-4 py-2 rounded-lg shadow-md">
+              Back to Home
+            </Button>
+          </Link>
         </div>
 
         <div className="space-y-6">

@@ -20,6 +20,7 @@ import {
   StarFilled,
   ClockCircleOutlined,
   PlusCircleOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import { trpc } from "@/server/client";
 
@@ -227,6 +228,22 @@ export default function MovieCritic() {
                     </p>
                     <hr className="border-purple-900/20" />
                     <div className="flex">
+                      <div
+                        className="flex-1 flex justify-center items-center cursor-pointer"
+                      >
+                        <Link href={`/reviews/${movie.id}-${movie.name}`}>
+                          <Button
+                            type="link"
+                            icon={<ExportOutlined className="text-zinc-300 hover:text-teal-400 transition-colors" />}
+                            className="text-zinc-300 hover:text-teal-400 transition-colors"
+                          />
+                        </Link>
+                      </div>
+
+                      <div className="text-purple-900/30 flex items-center">
+                        |
+                      </div>
+
                       <div
                         className="flex-1 flex justify-center items-center cursor-pointer"
                         onClickCapture={(e) => {
