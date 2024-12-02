@@ -45,7 +45,7 @@ const MovieReviews = () => {
     },
   });
 
-  const editReviewMutation = trpc.reviews.create.useMutation({
+  const editReviewMutation = trpc.reviews.update.useMutation({
     onSuccess: () => {
       message.success("Review updated successfully");
       setIsEditModalVisible(false);
@@ -78,15 +78,30 @@ const MovieReviews = () => {
     setIsEditModalVisible(true);
   };
 
-  const handleEditOk = () => {
-    if (selectedReview) {
-      editReviewMutation.mutate({
-        movieId: Number(movieId),
-        comments: newComments,
-        rating: newRating,
-        reviewer: isAnonymous ? undefined : newReviewer,
-      });
+  const handleEditReview = () => {
+    if (newRating === undefined || !newComments) {
+      message.error("Please provide rating and comments.");
+      return;
     }
+
+    editReviewMutation.mutate(
+      {
+        id: selectedReview?.id || 0, // Selected review ID
+        movieId: Number(movieId),
+        reviewer: isAnonymous ? undefined : newReviewer,
+        rating: newRating,
+        comments: newComments,
+      },
+      {
+        onSettled: () => {
+          setIsEditModalVisible(false);
+          setNewComments("");
+          setNewRating(0);
+          setNewReviewer("");
+          setIsAnonymous(false);
+        },
+      }
+    );
   };
 
   const showDeleteModal = (review: Review) => {
@@ -172,7 +187,7 @@ const MovieReviews = () => {
         <Modal
           title="Edit Review"
           visible={isEditModalVisible}
-          onOk={handleEditOk}
+          onOk={handleEditReview}
           onCancel={() => setIsEditModalVisible(false)}
           okButtonProps={{ className: "bg-blue-500 hover:bg-blue-600" }}
         >
@@ -213,9 +228,9 @@ const MovieReviews = () => {
           visible={isDeleteModalVisible}
           onOk={handleDeleteOk}
           onCancel={() => setIsDeleteModalVisible(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          okButtonProps={{ className: "bg-red-500 hover:bg-red-600" }}
+          okButtonProps={{
+            className: "bg-red-500 hover:bg-red-600",
+          }}
         >
           <p>Are you sure you want to delete this review?</p>
         </Modal>

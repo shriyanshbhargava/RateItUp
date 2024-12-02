@@ -55,6 +55,43 @@ export const reviewsRouter = router({
       });
     }),
 
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.number(), // Review ID to identify the review
+        movieId: z.number().optional(), // Optional movieId to update
+        reviewer: z.string().optional(), // Optional reviewer name
+        rating: z.number().min(0).max(10).optional(), // Optional rating with a range (e.g., 0-10)
+        comments: z.string().optional(), // Optional comments
+      })
+    )
+    .mutation(async (opts) => {
+      const { input } = opts;
+
+      // Validate that at least one field to update is provided
+      if (
+        input.movieId === undefined &&
+        input.reviewer === undefined &&
+        input.rating === undefined &&
+        input.comments === undefined
+      ) {
+        throw new Error("At least one field must be provided to update.");
+      }
+
+      // Update the review
+      return await prisma.review.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          ...(input.movieId !== undefined && { movieId: input.movieId }),
+          ...(input.reviewer !== undefined && { reviewer: input.reviewer }),
+          ...(input.rating !== undefined && { rating: input.rating }),
+          ...(input.comments !== undefined && { comments: input.comments }),
+        },
+      });
+    }),
+
   getReviewsByMovieId: publicProcedure
     .input(z.object({ movieId: z.number() }))
     .query(async (opts) => {
