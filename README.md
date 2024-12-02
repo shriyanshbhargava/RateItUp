@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎬 RateItUp – Movie Ratings & Reviews
 
-## Getting Started
+**RateItUp** is a full-stack web app that lets users rate, review, and explore movies. Built with modern technologies for a seamless and interactive experience.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Rate and Review**: Share your opinions about your favorite (or not-so-favorite) movies.  
+- **Search and Explore**: Dive into an extensive movie database to find hidden gems.  
+- **Interactive UI**: Designed with React.js and Tailwind CSS for a responsive and engaging experience.  
+- **Smooth Performance**: Powered by Prisma, MySQL, and tRPC for fast and reliable performance.  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Future Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Personalized Recommendations**: Get movie suggestions tailored to your taste.  
+- **Social Features**: Follow users, share movie lists, and discover what's trending.  
+- **Expanded Content**: Include TV shows and web series to broaden your entertainment choices.  
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🌐 Live Demo
 
-## Learn More
+Check out **RateItUp** in action: [rate-it-up.vercel.app](https://rate-it-up.vercel.app)
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠 How to Run Locally
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/shriyanshbhargava/rateitup.git
+   ```
+2. Navigate to the project directory:  
+   ```bash
+   cd rateitup
+   ```
+3. Install dependencies:  
+   ```bash
+   npm install
+   ```
+4. Start the development server:  
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and visit: [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 💻 Technologies Used
 
-## Deploy on Vercel
+**Frontend**: Next.js, Typescript & Tailwind CSS  
+**Backend**: Node.js, Express.js, tRPC  
+**Database**: MySQL, Prisma  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Contributions are welcome! Feel free to:  
+- Open issues for bugs or feature requests.  
+- Suggest improvements by submitting a pull request.  
+
+Let’s make **RateItUp** better together!  
+
+---
+
+### 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+Made with ❤️ by [Shriyansh Bhargava](https://github.com/shriyanshbhargava).
